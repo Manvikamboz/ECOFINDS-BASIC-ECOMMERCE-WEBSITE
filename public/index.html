@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFinds - Sustainable Second-Hand Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #8fbc8f 0%, #f5f5dc 50%, #9acd32 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(245, 245, 220, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(60, 120, 60, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid rgba(144, 189, 144, 0.3);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #2e7d32, #4caf50, #8bc34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #2e7d32;
+            border: 2px solid #2e7d32;
+        }
+
+        .btn-secondary:hover {
+            background: #2e7d32;
+            color: white;
+        }
+
+        .main-content {
+            background: rgba(245, 245, 220, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(60, 120, 60, 0.15);
+            min-height: 500px;
+            border: 1px solid rgba(144, 189, 144, 0.3);
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #2e7d32;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #c8e6c9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4caf50;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(60, 120, 60, 0.15);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(200, 230, 201, 0.5);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(46, 125, 50, 0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: #4caf50;
+            font-size: 0.9rem;
+            border: 2px solid rgba(200, 230, 201, 0.5);
+            overflow: hidden;
+        }
+
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2e7d32;
+        }
+
+        .product-price {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #388e3c;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-category {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: inline-block;
+            border: 1px solid rgba(46, 125, 50, 0.2);
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-filters input,
+        .search-filters select {
+            padding: 0.7rem;
+            border: 2px solid #c8e6c9;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .search-filters input:focus,
+        .search-filters select:focus {
+            outline: none;
+            border-color: #4caf50;
+        }
+
+        .search-filters input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .welcome-screen h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #2e7d32, #4caf50, #8bc34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-screen p {
+            font-size: 1.2rem;
+            color: #2e7d32;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cart-item {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(60, 120, 60, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(200, 230, 201, 0.5);
+        }
+
+        .cart-total {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .success {
+            color: #27ae60;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            color: #4caf50;
+            font-style: italic;
+        }
+
+        #imagePreview {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        #previewImg {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            border: 2px solid #c8e6c9;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .nav-buttons {
+                justify-content: center;
+            }
+
+            .search-filters {
+                flex-direction: column;
+            }
+
+            .search-filters input,
+            .search-filters select {
+                width: 100%;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-screen h1 {
+                font-size: 2rem;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">🌱 EcoFinds</div>
+            <nav class="nav-buttons">
+                <button class="btn btn-secondary" onclick="showScreen('home')">Home</button>
+                <button class="btn btn-secondary" onclick="showScreen('browse')" id="browseBtn">Browse</button>
+                <button class="btn btn-secondary" onclick="showScreen('cart')" id="cartBtn">Cart (<span id="cartCount">0</span>)</button>
+                <button class="btn btn-secondary" onclick="showScreen('dashboard')" id="dashboardBtn" style="display: none;">Dashboard</button>
+                <button class="btn btn-primary" onclick="showScreen('login')" id="loginBtn">Login</button>
+                <button class="btn btn-primary" onclick="showScreen('register')" id="registerBtn">Register</button>
+                <button class="btn btn-danger" onclick="logout()" id="logoutBtn" style="display: none;">Logout</button>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <!-- Welcome Screen -->
+            <div id="home" class="screen active">
+                <div class="welcome-screen">
+                    <h1>Welcome to EcoFinds</h1>
+                    <p>Discover unique treasures, reduce waste, and embrace sustainable living through our vibrant second-hand marketplace. Every purchase makes a difference for our planet.</p>
+                    <div style="margin-top: 2rem;">
+                        <button class="btn btn-primary" onclick="showScreen('browse')" style="margin-right: 1rem;">Start Shopping</button>
+                        <button class="btn btn-secondary" onclick="showScreen('register')">Join Community</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Screen -->
+            <div id="login" class="screen">
+                <h2>Login to EcoFinds</h2>
+                <form onsubmit="login(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Email:</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password:</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <div id="loginError" class="error"></div>
+                </form>
+            </div>
+
+            <!-- Register Screen -->
+            <div id="register" class="screen">
+                <h2>Join EcoFinds</h2>
+                <form onsubmit="register(event)">
+                    <div class="form-group">
+                        <label for="registerUsername">Username:</label>
+                        <input type="text" id="registerUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email:</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password:</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <div id="registerError" class="error"></div>
+                </form>
+            </div>
+
+            <!-- Browse Products Screen -->
+            <div id="browse" class="screen">
+                <h2>Browse Products</h2>
+                <div class="search-filters">
+                    <input type="text" id="searchInput" placeholder="Search products..." oninput="filterProducts()">
+                    <select id="categoryFilter" onchange="filterProducts()">
+                        <option value="">All Categories</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Home & Garden">Home & Garden</option>
+                        <option value="Books">Books</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Toys">Toys</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div id="productsGrid" class="product-grid">
+                    <div class="loading">Loading products...</div>
+                </div>
+            </div>
+
+            <!-- Product Detail Screen -->
+            <div id="productDetail" class="screen">
+                <button class="btn btn-secondary" onclick="showScreen('browse')">← Back to Browse</button>
+                <div id="productDetailContent"></div>
+            </div>
+
+            <!-- Cart Screen -->
+            <div id="cart" class="screen">
+                <h2>Shopping Cart</h2>
+                <div id="cartItems">
+                    <div class="loading">Loading cart...</div>
+                </div>
+                <div id="cartTotal" class="cart-total" style="display: none;"></div>
+                <button class="btn btn-success" onclick="checkout()" id="checkoutBtn" style="display: none; margin-top: 1rem;">Checkout</button>
+            </div>
+
+            <!-- User Dashboard -->
+            <div id="dashboard" class="screen">
+                <div id="userInfo" class="user-info"></div>
+                
+                <h3>My Profile</h3>
+                <form onsubmit="updateProfile(event)" style="margin-bottom: 2rem;">
+                    <div class="form-group">
+                        <label for="updateUsername">Username:</label>
+                        <input type="text" id="updateUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateEmail">Email:</label>
+                        <input type="email" id="updateEmail" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                    <div id="profileUpdateMsg"></div>
+                </form>
+
+                <h3>Create New Listing</h3>
+                <form onsubmit="createListing(event)" id="listingForm" style="margin-bottom: 2rem;">
+                    <div class="form-group">
+                        <label for="listingTitle">Title:</label>
+                        <input type="text" id="listingTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="listingDescription">Description:</label>
+                        <textarea id="listingDescription" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="listingCategory">Category:</label>
+                        <select id="listingCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Home & Garden">Home & Garden</option>
+                            <option value="Books">Books</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Toys">Toys</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="listingPrice">Price ($):</label>
+                        <input type="number" id="listingPrice" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="listingImage">Product Image:</label>
+                        <input type="file" id="listingImage" accept="image/*" onchange="previewImage(event)">
+                        <div id="imagePreview" style="display: none;">
+                            <img id="previewImg" alt="Preview">
+                        </div>
+                        <small style="color: #666;">Max file size: 5MB. Supported formats: JPG, PNG, GIF</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Listing</button>
+                    <div id="listingMsg"></div>
+                </form>
+
+                <h3>My Listings</h3>
+                <div id="myListings" class="product-grid">
+                    <div class="loading">Loading your listings...</div>
+                </div>
+
+                <h3>Purchase History</h3>
+                <div id="purchaseHistory">
+                    <div class="loading">Loading purchase history...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Global variables
+        const API_BASE = 'http://localhost:3000/api';
+        let currentUser = null;
+        let authToken = null;
+        let products = [];
+        let cart = [];
+        let currentProductId = null;
+        let editingProductId = null;
+
+        // Initialize app
+        function init() {
+            const savedToken = localStorage.getItem('ecofinds_token');
+            const savedUser = localStorage.getItem('ecofinds_user');
+            
+            if (savedToken && savedUser) {
+                authToken = savedToken;
+                currentUser = JSON.parse(savedUser);
+                updateUI();
+            }
+            
+            loadProducts();
+        }
+
+        // API helper function
+        async function apiCall(endpoint, options = {}) {
+            const url = `${API_BASE}${endpoint}`;
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                },
+                ...options
+            };
+
+            if (authToken && !config.headers.Authorization) {
+                config.headers.Authorization = `Bearer ${authToken}`;
+            }
+
+            try {
+                const response = await fetch(url, config);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Request failed');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('API call failed:', error);
+                throw error;
+            }
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    event.target.value = '';
+                    document.getElementById('imagePreview').style.display = 'none';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('imagePreview').style.display = 'none';
+            }
+        }
+
+        function showScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenName).classList.add('active');
+
+            if (screenName === 'dashboard' && currentUser) {
+                loadDashboard();
+            } else if (screenName === 'cart') {
+                loadCart();
+            } else if (screenName === 'browse') {
+                loadProducts();
+            }
+        }
+
+        async function register(event) {
+            event.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            try {
+                const data = await apiCall('/register', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                authToken = data.token;
+                currentUser = data.user;
+                
+                localStorage.setItem('ecofinds_token', authToken);
+                localStorage.setItem('ecofinds_user', JSON.stringify(currentUser));
+                
+                document.getElementById('registerError').textContent = '';
+                updateUI();
+                showScreen('dashboard');
+            } catch (error) {
+                document.getElementById('registerError').textContent = error.message;
+            }
+        }
+
+        async function login(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const data = await apiCall('/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+
+                authToken = data.token;
+                currentUser = data.user;
+                
+                localStorage.setItem('ecofinds_token', authToken);
+                localStorage.setItem('ecofinds_user', JSON.stringify(currentUser));
+                
+                document.getElementById('loginError').textContent = '';
+                updateUI();
+                showScreen('dashboard');
+            } catch (error) {
+                document.getElementById('loginError').textContent = error.message;
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            authToken = null;
+            cart = [];
+            
+            localStorage.removeItem('ecofinds_token');
+            localStorage.removeItem('ecofinds_user');
+            
+            updateUI();
+            showScreen('home');
+        }
+
+        function updateUI() {
+            const isLoggedIn = currentUser !== null;
+            
+            document.getElementById('loginBtn').style.display = isLoggedIn ? 'none' : 'inline-block';
+            document.getElementById('registerBtn').style.display = isLoggedIn ? 'none' : 'inline-block';
+            document.getElementById('dashboardBtn').style.display = isLoggedIn ? 'inline-block' : 'none';
+            document.getElementById('logoutBtn').style.display = isLoggedIn ? 'inline-block' : 'none';
+            
+            if (isLoggedIn) {
+                loadCart();
+            } else {
+                updateCartCount(0);
+            }
+        }
+
+        async function loadProducts() {
+            try {
+                const searchTerm = document.getElementById('searchInput')?.value || '';
+                const category = document.getElementById('categoryFilter')?.value || '';
+                
+                let endpoint = '/products?';
+                if (searchTerm) endpoint += `search=${encodeURIComponent(searchTerm)}&`;
+                if (category) endpoint += `category=${encodeURIComponent(category)}&`;
+                
+                products = await apiCall(endpoint);
+                displayProducts(products);
+            } catch (error) {
+                document.getElementById('productsGrid').innerHTML = '<p style="text-align: center; color: #e74c3c;">Failed to load products</p>';
+            }
+        }
+
+        function filterProducts() {
+            loadProducts();
+        }
+
+        function displayProducts(productList) {
+            const grid = document.getElementById('productsGrid');
+            
+            if (productList.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1 / -1;">No products found</p>';
+                return;
+            }
+
+            grid.innerHTML = productList.map(product => {
+                const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http'));
+                const imageDisplay = isImageUrl 
+                    ? `<img src="${product.image}" alt="${product.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">` 
+                    : `<div style="font-size: 4rem;">${product.image || '📦'}</div>`;
+                
+                return `
+                    <div class="product-card" onclick="showProductDetail(${product.id})">
+                        <div class="product-image">${imageDisplay}</div>
+                        <div class="product-title">${product.title}</div>
+                        <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
+                        <div class="product-category">${product.category}</div>
+                        <div class="product-actions">
+                            <button class="btn btn-success btn-small" onclick="event.stopPropagation(); addToCart(${product.id})">Add to Cart</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function showProductDetail(productId) {
+            try {
+                const product = await apiCall(`/products/${productId}`);
+                currentProductId = productId;
+                
+                const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http'));
+                const imageDisplay = isImageUrl 
+                    ? `<img src="${product.image}" alt="${product.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">` 
+                    : `<div style="font-size: 6rem;">${product.image || '📦'}</div>`;
+                
+                document.getElementById('productDetailContent').innerHTML = `
+                    <div style="margin-top: 2rem;">
+                        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 300px;">
+                                <div class="product-image" style="height: 300px;">${imageDisplay}</div>
+                            </div>
+                            <div style="flex: 2; min-width: 300px;">
+                                <h2>${product.title}</h2>
+                                <p style="margin: 1rem 0; color: #666;">${product.description}</p>
+                                <div class="product-category" style="margin: 1rem 0;">${product.category}</div>
+                                <div class="product-price" style="font-size: 2rem; margin: 1rem 0;">$${parseFloat(product.price).toFixed(2)}</div>
+                                <div style="margin: 1rem 0; color: #666;">Seller: ${product.seller_username}</div>
+                                <button class="btn btn-success" onclick="addToCart(${product.id})" style="margin-right: 1rem;">Add to Cart</button>
+                                <button class="btn btn-secondary" onclick="showScreen('browse')">Continue Shopping</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                showScreen('productDetail');
+            } catch (error) {
+                alert('Failed to load product details');
+                showScreen('browse');
+            }
+        }
+
+        async function addToCart(productId) {
+            if (!currentUser) {
+                alert('Please log in to add items to cart');
+                showScreen('login');
+                return;
+            }
+
+            try {
+                await apiCall('/cart', {
+                    method: 'POST',
+                    body: JSON.stringify({ productId, quantity: 1 })
+                });
+                
+                loadCart();
+            } catch (error) {
+                alert('Failed to add item to cart: ' + error.message);
+            }
+        }
+
+        async function removeFromCart(productId) {
+            try {
+                await apiCall(`/cart/${productId}`, {
+                    method: 'DELETE'
+                });
+                
+                loadCart();
+            } catch (error) {
+                alert('Failed to remove item from cart: ' + error.message);
+            }
+        }
+
+        async function loadCart() {
+            if (!currentUser) {
+                updateCartCount(0);
+                return;
+            }
+
+            try {
+                cart = await apiCall('/cart');
+                updateCartCount(cart.reduce((sum, item) => sum + item.quantity, 0));
+                updateCartDisplay();
+            } catch (error) {
+                console.error('Failed to load cart:', error);
+                updateCartCount(0);
+            }
+        }
+
+        function updateCartCount(count) {
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align: center; color: #666;">Your cart is empty</p>';
+                cartTotal.style.display = 'none';
+                checkoutBtn.style.display = 'none';
+                return;
+            }
+
+            cartItems.innerHTML = cart.map(item => {
+                const isImageUrl = item.image && (item.image.startsWith('/uploads/') || item.image.startsWith('http'));
+                const imageDisplay = isImageUrl 
+                    ? `<img src="${item.image}" alt="${item.title}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">` 
+                    : `<div style="font-size: 2rem;">${item.image || '📦'}</div>`;
+                
+                return `
+                    <div class="cart-item">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            ${imageDisplay}
+                            <div>
+                                <div style="font-weight: 600;">${item.title}</div>
+                                <div style="color: #666;">${parseFloat(item.price).toFixed(2)} x ${item.quantity}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; margin-bottom: 0.5rem;">${(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
+                            <button class="btn btn-danger btn-small" onclick="removeFromCart(${item.product_id})">Remove</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const total = cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
+            cartTotal.textContent = `Total: ${total.toFixed(2)}`;
+            cartTotal.style.display = 'block';
+            checkoutBtn.style.display = 'block';
+        }
+
+        async function checkout() {
+            if (!currentUser) {
+                alert('Please log in to checkout');
+                showScreen('login');
+                return;
+            }
+
+            if (cart.length === 0) return;
+
+            try {
+                await apiCall('/checkout', {
+                    method: 'POST'
+                });
+                
+                cart = [];
+                updateCartCount(0);
+                updateCartDisplay();
+                
+                alert('Purchase successful! Thank you for shopping with EcoFinds.');
+                
+                if (document.getElementById('dashboard').classList.contains('active')) {
+                    loadPurchaseHistory();
+                }
+            } catch (error) {
+                alert('Checkout failed: ' + error.message);
+            }
+        }
+
+        async function createListing(event) {
+            event.preventDefault();
+            
+            if (!currentUser) {
+                document.getElementById('listingMsg').innerHTML = '<div class="error">Please log in to create listings</div>';
+                return;
+            }
+
+            const title = document.getElementById('listingTitle').value;
+            const description = document.getElementById('listingDescription').value;
+            const category = document.getElementById('listingCategory').value;
+            const price = parseFloat(document.getElementById('listingPrice').value);
+            const imageFile = document.getElementById('listingImage').files[0];
+
+            try {
+                const formData = new FormData();
+                formData.append('title', title);
+                formData.append('description', description);
+                formData.append('category', category);
+                formData.append('price', price);
+                
+                if (imageFile) {
+                    formData.append('image', imageFile);
+                }
+
+                if (editingProductId) {
+                    const response = await fetch(`${API_BASE}/products/${editingProductId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to update listing');
+                    }
+                    
+                    document.getElementById('listingMsg').innerHTML = '<div class="success">Listing updated successfully!</div>';
+                    
+                    const form = event.target;
+                    form.querySelector('button[type="submit"]').textContent = 'Create Listing';
+                    editingProductId = null;
+                } else {
+                    const response = await fetch(`${API_BASE}/products`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to create listing');
+                    }
+                    
+                    document.getElementById('listingMsg').innerHTML = '<div class="success">Listing created successfully!</div>';
+                }
+                
+                event.target.reset();
+                document.getElementById('imagePreview').style.display = 'none';
+                
+                loadMyListings();
+                loadProducts();
+                
+            } catch (error) {
+                document.getElementById('listingMsg').innerHTML = `<div class="error">${error.message}</div>`;
+            }
+        }
+
+        function editListing(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            document.getElementById('listingTitle').value = product.title;
+            document.getElementById('listingDescription').value = product.description;
+            document.getElementById('listingCategory').value = product.category;
+            document.getElementById('listingPrice').value = product.price;
+
+            const submitBtn = document.querySelector('#listingForm button[type="submit"]');
+            submitBtn.textContent = 'Update Listing';
+            editingProductId = productId;
+            
+            document.getElementById('listingMsg').innerHTML = '<div style="color: #2e7d32;">Editing listing...</div>';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function deleteListing(productId) {
+            if (!confirm('Are you sure you want to delete this listing?')) return;
+
+            try {
+                await apiCall(`/products/${productId}`, {
+                    method: 'DELETE'
+                });
+                
+                document.getElementById('listingMsg').innerHTML = '<div class="success">Listing deleted successfully!</div>';
+                loadMyListings();
+                loadProducts();
+            } catch (error) {
+                alert('Failed to delete listing: ' + error.message);
+            }
+        }
+
+        async function loadDashboard() {
+            document.getElementById('userInfo').innerHTML = `
+                <h3>Welcome, ${currentUser.username}!</h3>
+                <p>Email: ${currentUser.email}</p>
+            `;
+
+            document.getElementById('updateUsername').value = currentUser.username;
+            document.getElementById('updateEmail').value = currentUser.email;
+
+            loadMyListings();
+            loadPurchaseHistory();
+        }
+
+        async function updateProfile(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('updateUsername').value;
+            const email = document.getElementById('updateEmail').value;
+            
+            try {
+                await apiCall('/profile', {
+                    method: 'PUT',
+                    body: JSON.stringify({ username, email })
+                });
+                
+                currentUser.username = username;
+                currentUser.email = email;
+                localStorage.setItem('ecofinds_user', JSON.stringify(currentUser));
+                
+                document.getElementById('profileUpdateMsg').innerHTML = '<div class="success">Profile updated successfully!</div>';
+                loadDashboard();
+            } catch (error) {
+                document.getElementById('profileUpdateMsg').innerHTML = `<div class="error">${error.message}</div>`;
+            }
+        }
+
+        async function loadMyListings() {
+            try {
+                const userProducts = await apiCall('/my-products');
+                const listingsContainer = document.getElementById('myListings');
+                
+                if (userProducts.length === 0) {
+                    listingsContainer.innerHTML = '<p style="text-align: center; color: #666;">No listings yet</p>';
+                    return;
+                }
+
+                listingsContainer.innerHTML = userProducts.map(product => {
+                    const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http'));
+                    const imageDisplay = isImageUrl 
+                        ? `<img src="${product.image}" alt="${product.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">` 
+                        : `<div style="font-size: 4rem;">${product.image || '📦'}</div>`;
+                    
+                    return `
+                        <div class="product-card">
+                            <div class="product-image">${imageDisplay}</div>
+                            <div class="product-title">${product.title}</div>
+                            <div class="product-price">${parseFloat(product.price).toFixed(2)}</div>
+                            <div class="product-category">${product.category}</div>
+                            <div class="product-actions">
+                                <button class="btn btn-secondary btn-small" onclick="editListing(${product.id})">Edit</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteListing(${product.id})">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                products = userProducts;
+            } catch (error) {
+                document.getElementById('myListings').innerHTML = '<p style="text-align: center; color: #e74c3c;">Failed to load listings</p>';
+            }
+        }
+
+        async function loadPurchaseHistory() {
+            try {
+                const orders = await apiCall('/orders');
+                const historyContainer = document.getElementById('purchaseHistory');
+                
+                if (orders.length === 0) {
+                    historyContainer.innerHTML = '<p style="text-align: center; color: #666;">No purchases yet</p>';
+                    return;
+                }
+
+                historyContainer.innerHTML = orders.map(order => `
+                    <div style="background: rgba(255, 255, 255, 0.95); padding: 1rem; border-radius: 10px; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(60, 120, 60, 0.1); border: 1px solid rgba(200, 230, 201, 0.5);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h4 style="color: #2e7d32;">Order #${order.id}</h4>
+                            <div style="color: #4caf50;">${new Date(order.order_date).toLocaleDateString()}</div>
+                        </div>
+                        <div style="margin-bottom: 1rem; color: #666;">
+                            ${order.items || 'Order items'}
+                        </div>
+                        <div style="text-align: right; font-weight: bold; color: #2e7d32; font-size: 1.1rem;">
+                            Total: ${parseFloat(order.total).toFixed(2)}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('purchaseHistory').innerHTML = '<p style="text-align: center; color: #e74c3c;">Failed to load purchase history</p>';
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
