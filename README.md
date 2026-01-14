@@ -1,6 +1,7 @@
 *EcoFinds - Sustainable Second-Hand Marketplace*
 A full-stack web application for buying and selling pre-owned items, promoting sustainability and reducing waste.
-the project is build by vibe coding
+
+The project is build by *vibe coding*
 
 Features
 User authentication (JWT + bcrypt)
