@@ -11,7 +11,7 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 // ─── Fail fast on missing env vars ────────────────────────────────────────────
-const REQUIRED_ENV = ['JWT_SECRET', 'DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
+const REQUIRED_ENV = ['JWT_SECRET', 'DB_HOST', 'DB_PORT', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
 for (const key of REQUIRED_ENV) {
     if (!process.env[key]) {
         console.error(`❌ Missing required environment variable: ${key}`);
@@ -90,9 +90,11 @@ app.use('/api/', apiLimiter);
 // ─── Database connection pool ──────────────────────────────────────────────────
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT) || 3306,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : false,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
