@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./public/banner.png" alt="EcoFinds Banner" width="100%"/>
+  <img src="./public/banner.png" alt="EcoFinds Banner" width="600"/>
 </div>
 
 <div align="center">
