@@ -57,13 +57,7 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 // ─── Multer storage ────────────────────────────────────────────────────────────
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadsDir),
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
-    }
-});
+const storage = multer.memoryStorage();
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
@@ -321,7 +315,7 @@ app.post('/api/products', authenticateToken, upload.single('image'), async (req,
 
         const sellerId = req.user.id;
         const imagePath = req.file
-            ? `/uploads/${req.file.filename}`
+            ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
             : (CATEGORY_EMOJIS[category] || '📦');
 
         const [result] = await pool.execute(
@@ -376,7 +370,7 @@ app.put('/api/products/:id', authenticateToken, upload.single('image'), async (r
         let imagePath = products[0].image;
         if (req.file) {
             deleteUploadedFile(products[0].image); // delete old file asynchronously
-            imagePath = `/uploads/${req.file.filename}`;
+            imagePath = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
         }
 
         await pool.execute(
