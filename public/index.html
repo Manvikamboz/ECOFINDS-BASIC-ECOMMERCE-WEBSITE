@@ -774,7 +774,7 @@
             }
 
             grid.innerHTML = productList.map(product => {
-                const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http'));
+                const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http') || product.image.startsWith('data:'));
                 const imageDisplay = isImageUrl
                     ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.title)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">`
                     : `<div style="font-size: 4rem;">${escapeHtml(product.image) || '📦'}</div>`;
@@ -798,7 +798,7 @@
                 const product = await apiCall(`/products/${parseInt(productId)}`);
                 currentProductId = productId;
                 
-                const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http'));
+                const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http') || product.image.startsWith('data:'));
                 const imageDisplay = isImageUrl
                     ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.title)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">`
                     : `<div style="font-size: 6rem;">${escapeHtml(product.image) || '📦'}</div>`;
@@ -893,7 +893,7 @@
             }
 
             cartItems.innerHTML = cart.map(item => {
-                const isImageUrl = item.image && (item.image.startsWith('/uploads/') || item.image.startsWith('http'));
+                const isImageUrl = item.image && (item.image.startsWith('/uploads/') || item.image.startsWith('http') || item.image.startsWith('data:'));
                 const imageDisplay = isImageUrl
                     ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">`
                     : `<div style="font-size: 2rem;">${escapeHtml(item.image) || '📦'}</div>`;
@@ -1103,7 +1103,7 @@
                 }
 
                 listingsContainer.innerHTML = myProducts.map(product => {
-                    const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http'));
+                    const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http') || product.image.startsWith('data:'));
                     const imageDisplay = isImageUrl
                         ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.title)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">`
                         : `<div style="font-size: 4rem;">${escapeHtml(product.image) || '📦'}</div>`;
