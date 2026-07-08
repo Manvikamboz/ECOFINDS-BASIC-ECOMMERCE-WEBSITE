@@ -20,6 +20,7 @@ for (const key of REQUIRED_ENV) {
 }
 
 const app = express();
+app.set('trust proxy', 1); // Allow rate limiting behind Vercel/proxies
 const PORT = process.env.PORT || 3000;
 
 // ─── Security headers (helmet) ─────────────────────────────────────────────────
@@ -267,9 +268,8 @@ app.get('/api/products', async (req, res) => {
             params.push(category);
         }
 
-        query += ' ORDER BY p.created_at DESC LIMIT ? OFFSET ?';
-        params.push(limit, offset);
-
+        query += ` ORDER BY p.created_at DESC LIMIT ${limit} OFFSET ${offset}`;
+        
         const [products] = await pool.execute(query, params);
         res.json(products);
     } catch (error) {
