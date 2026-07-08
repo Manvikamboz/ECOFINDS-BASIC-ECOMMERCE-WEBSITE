@@ -425,7 +425,7 @@
                 <form onsubmit="register(event)">
                     <div class="form-group">
                         <label for="registerUsername">Username:</label>
-                        <input type="text" id="registerUsername" required>
+                        <input type="text" id="registerUsername" required minlength="3" maxlength="50">
                     </div>
                     <div class="form-group">
                         <label for="registerEmail">Email:</label>
@@ -433,7 +433,12 @@
                     </div>
                     <div class="form-group">
                         <label for="registerPassword">Password:</label>
-                        <input type="password" id="registerPassword" required>
+                        <input type="password" id="registerPassword" required minlength="8">
+                        <small style="color:#666">Min 8 characters, must include a number</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerConfirm">Confirm Password:</label>
+                        <input type="password" id="registerConfirm" required minlength="8">
                     </div>
                     <button type="submit" class="btn btn-primary">Register</button>
                     <div id="registerError" class="error"></div>
@@ -548,14 +553,31 @@
     </div>
 
     <script>
-        // Global variables
-        const API_BASE = 'http://localhost:3000/api';
+        // Global variables — use relative URL so it works in production
+        const API_BASE = '/api';
         let currentUser = null;
         let authToken = null;
         let products = [];
+        let myProducts = []; // separate from global products to avoid overwrite bug
         let cart = [];
         let currentProductId = null;
         let editingProductId = null;
+
+        // XSS prevention: always escape user data before inserting into innerHTML
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#x27;');
+        }
+
+        // Password strength: min 8 chars, 1 number
+        function isStrongPassword(pw) {
+            return typeof pw === 'string' && pw.length >= 8 && /\d/.test(pw);
+        }
 
         // Initialize app
         function init() {
@@ -642,6 +664,16 @@
             const username = document.getElementById('registerUsername').value;
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerConfirm').value;
+
+            if (password !== confirm) {
+                document.getElementById('registerError').textContent = 'Passwords do not match';
+                return;
+            }
+            if (!isStrongPassword(password)) {
+                document.getElementById('registerError').textContent = 'Password must be at least 8 characters and include a number';
+                return;
+            }
 
             try {
                 const data = await apiCall('/register', {
@@ -651,10 +683,8 @@
 
                 authToken = data.token;
                 currentUser = data.user;
-                
                 localStorage.setItem('ecofinds_token', authToken);
                 localStorage.setItem('ecofinds_user', JSON.stringify(currentUser));
-                
                 document.getElementById('registerError').textContent = '';
                 updateUI();
                 showScreen('dashboard');
@@ -745,18 +775,18 @@
 
             grid.innerHTML = productList.map(product => {
                 const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http'));
-                const imageDisplay = isImageUrl 
-                    ? `<img src="${product.image}" alt="${product.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">` 
-                    : `<div style="font-size: 4rem;">${product.image || '📦'}</div>`;
+                const imageDisplay = isImageUrl
+                    ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.title)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">`
+                    : `<div style="font-size: 4rem;">${escapeHtml(product.image) || '📦'}</div>`;
                 
                 return `
-                    <div class="product-card" onclick="showProductDetail(${product.id})">
+                    <div class="product-card" onclick="showProductDetail(${parseInt(product.id)})">
                         <div class="product-image">${imageDisplay}</div>
-                        <div class="product-title">${product.title}</div>
+                        <div class="product-title">${escapeHtml(product.title)}</div>
                         <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
-                        <div class="product-category">${product.category}</div>
+                        <div class="product-category">${escapeHtml(product.category)}</div>
                         <div class="product-actions">
-                            <button class="btn btn-success btn-small" onclick="event.stopPropagation(); addToCart(${product.id})">Add to Cart</button>
+                            <button class="btn btn-success btn-small" onclick="event.stopPropagation(); addToCart(${parseInt(product.id)})">Add to Cart</button>
                         </div>
                     </div>
                 `;
@@ -765,13 +795,13 @@
 
         async function showProductDetail(productId) {
             try {
-                const product = await apiCall(`/products/${productId}`);
+                const product = await apiCall(`/products/${parseInt(productId)}`);
                 currentProductId = productId;
                 
                 const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http'));
-                const imageDisplay = isImageUrl 
-                    ? `<img src="${product.image}" alt="${product.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">` 
-                    : `<div style="font-size: 6rem;">${product.image || '📦'}</div>`;
+                const imageDisplay = isImageUrl
+                    ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.title)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">`
+                    : `<div style="font-size: 6rem;">${escapeHtml(product.image) || '📦'}</div>`;
                 
                 document.getElementById('productDetailContent').innerHTML = `
                     <div style="margin-top: 2rem;">
@@ -780,12 +810,12 @@
                                 <div class="product-image" style="height: 300px;">${imageDisplay}</div>
                             </div>
                             <div style="flex: 2; min-width: 300px;">
-                                <h2>${product.title}</h2>
-                                <p style="margin: 1rem 0; color: #666;">${product.description}</p>
-                                <div class="product-category" style="margin: 1rem 0;">${product.category}</div>
+                                <h2>${escapeHtml(product.title)}</h2>
+                                <p style="margin: 1rem 0; color: #666;">${escapeHtml(product.description)}</p>
+                                <div class="product-category" style="margin: 1rem 0;">${escapeHtml(product.category)}</div>
                                 <div class="product-price" style="font-size: 2rem; margin: 1rem 0;">$${parseFloat(product.price).toFixed(2)}</div>
-                                <div style="margin: 1rem 0; color: #666;">Seller: ${product.seller_username}</div>
-                                <button class="btn btn-success" onclick="addToCart(${product.id})" style="margin-right: 1rem;">Add to Cart</button>
+                                <div style="margin: 1rem 0; color: #666;">Seller: ${escapeHtml(product.seller_username)}</div>
+                                <button class="btn btn-success" onclick="addToCart(${parseInt(product.id)})" style="margin-right: 1rem;">Add to Cart</button>
                                 <button class="btn btn-secondary" onclick="showScreen('browse')">Continue Shopping</button>
                             </div>
                         </div>
@@ -842,7 +872,7 @@
                 updateCartDisplay();
             } catch (error) {
                 console.error('Failed to load cart:', error);
-                updateCartCount(0);
+                updateCartCount(0); // reset count on error to avoid stale state
             }
         }
 
@@ -864,29 +894,29 @@
 
             cartItems.innerHTML = cart.map(item => {
                 const isImageUrl = item.image && (item.image.startsWith('/uploads/') || item.image.startsWith('http'));
-                const imageDisplay = isImageUrl 
-                    ? `<img src="${item.image}" alt="${item.title}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">` 
-                    : `<div style="font-size: 2rem;">${item.image || '📦'}</div>`;
+                const imageDisplay = isImageUrl
+                    ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">`
+                    : `<div style="font-size: 2rem;">${escapeHtml(item.image) || '📦'}</div>`;
                 
                 return `
                     <div class="cart-item">
                         <div style="display: flex; align-items: center; gap: 1rem;">
                             ${imageDisplay}
                             <div>
-                                <div style="font-weight: 600;">${item.title}</div>
-                                <div style="color: #666;">${parseFloat(item.price).toFixed(2)} x ${item.quantity}</div>
+                                <div style="font-weight: 600;">${escapeHtml(item.title)}</div>
+                                <div style="color: #666;">$${parseFloat(item.price).toFixed(2)} x ${item.quantity}</div>
                             </div>
                         </div>
                         <div>
-                            <div style="font-weight: 600; margin-bottom: 0.5rem;">${(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
-                            <button class="btn btn-danger btn-small" onclick="removeFromCart(${item.product_id})">Remove</button>
+                            <div style="font-weight: 600; margin-bottom: 0.5rem;">$${(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
+                            <button class="btn btn-danger btn-small" onclick="removeFromCart(${parseInt(item.product_id)})">Remove</button>
                         </div>
                     </div>
                 `;
             }).join('');
 
             const total = cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
-            cartTotal.textContent = `Total: ${total.toFixed(2)}`;
+            cartTotal.textContent = `Total: $${total.toFixed(2)}`;
             cartTotal.style.display = 'block';
             checkoutBtn.style.display = 'block';
         }
@@ -994,7 +1024,7 @@
         }
 
         function editListing(productId) {
-            const product = products.find(p => p.id === productId);
+            const product = myProducts.find(p => p.id === productId);
             if (!product) return;
 
             document.getElementById('listingTitle').value = product.title;
@@ -1007,7 +1037,6 @@
             editingProductId = productId;
             
             document.getElementById('listingMsg').innerHTML = '<div style="color: #2e7d32;">Editing listing...</div>';
-            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1029,8 +1058,8 @@
 
         async function loadDashboard() {
             document.getElementById('userInfo').innerHTML = `
-                <h3>Welcome, ${currentUser.username}!</h3>
-                <p>Email: ${currentUser.email}</p>
+                <h3>Welcome, ${escapeHtml(currentUser.username)}!</h3>
+                <p>Email: ${escapeHtml(currentUser.email)}</p>
             `;
 
             document.getElementById('updateUsername').value = currentUser.username;
@@ -1065,35 +1094,33 @@
 
         async function loadMyListings() {
             try {
-                const userProducts = await apiCall('/my-products');
+                myProducts = await apiCall('/my-products'); // use separate var, don't overwrite global products
                 const listingsContainer = document.getElementById('myListings');
                 
-                if (userProducts.length === 0) {
+                if (myProducts.length === 0) {
                     listingsContainer.innerHTML = '<p style="text-align: center; color: #666;">No listings yet</p>';
                     return;
                 }
 
-                listingsContainer.innerHTML = userProducts.map(product => {
+                listingsContainer.innerHTML = myProducts.map(product => {
                     const isImageUrl = product.image && (product.image.startsWith('/uploads/') || product.image.startsWith('http'));
-                    const imageDisplay = isImageUrl 
-                        ? `<img src="${product.image}" alt="${product.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">` 
-                        : `<div style="font-size: 4rem;">${product.image || '📦'}</div>`;
+                    const imageDisplay = isImageUrl
+                        ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.title)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">`
+                        : `<div style="font-size: 4rem;">${escapeHtml(product.image) || '📦'}</div>`;
                     
                     return `
                         <div class="product-card">
                             <div class="product-image">${imageDisplay}</div>
-                            <div class="product-title">${product.title}</div>
-                            <div class="product-price">${parseFloat(product.price).toFixed(2)}</div>
-                            <div class="product-category">${product.category}</div>
+                            <div class="product-title">${escapeHtml(product.title)}</div>
+                            <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
+                            <div class="product-category">${escapeHtml(product.category)}</div>
                             <div class="product-actions">
-                                <button class="btn btn-secondary btn-small" onclick="editListing(${product.id})">Edit</button>
-                                <button class="btn btn-danger btn-small" onclick="deleteListing(${product.id})">Delete</button>
+                                <button class="btn btn-secondary btn-small" onclick="editListing(${parseInt(product.id)})">Edit</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteListing(${parseInt(product.id)})">Delete</button>
                             </div>
                         </div>
                     `;
                 }).join('');
-                
-                products = userProducts;
             } catch (error) {
                 document.getElementById('myListings').innerHTML = '<p style="text-align: center; color: #e74c3c;">Failed to load listings</p>';
             }
@@ -1112,14 +1139,14 @@
                 historyContainer.innerHTML = orders.map(order => `
                     <div style="background: rgba(255, 255, 255, 0.95); padding: 1rem; border-radius: 10px; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(60, 120, 60, 0.1); border: 1px solid rgba(200, 230, 201, 0.5);">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <h4 style="color: #2e7d32;">Order #${order.id}</h4>
+                            <h4 style="color: #2e7d32;">Order #${parseInt(order.id)}</h4>
                             <div style="color: #4caf50;">${new Date(order.order_date).toLocaleDateString()}</div>
                         </div>
                         <div style="margin-bottom: 1rem; color: #666;">
-                            ${order.items || 'Order items'}
+                            ${escapeHtml(order.items) || 'Order items'}
                         </div>
                         <div style="text-align: right; font-weight: bold; color: #2e7d32; font-size: 1.1rem;">
-                            Total: ${parseFloat(order.total).toFixed(2)}
+                            Total: $${parseFloat(order.total).toFixed(2)}
                         </div>
                     </div>
                 `).join('');
