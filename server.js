@@ -640,7 +640,6 @@ if (require.main === module) {
     });
 } else {
     // Running as a Vercel serverless function — export app directly
-    // Pool auto-connects on first query; connectDB() just verifies the connection
-    connectDB().catch(err => console.error('DB init warning:', err.message));
+    // Pool auto-connects lazily on first query
     module.exports = app;
 }
