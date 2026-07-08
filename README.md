@@ -1,72 +1,84 @@
-# 🌱 EcoFinds — Sustainable Second-Hand Marketplace
+<div align="center">
+  <img src="./public/banner.png" alt="EcoFinds Banner" width="100%"/>
+</div>
 
-> **Discover unique treasures, reduce waste, and embrace sustainable living through our vibrant second-hand marketplace. Every purchase makes a difference for our planet.**
+<div align="center">
 
 [![CI/CD](https://github.com/Manvikamboz/ECOFINDS-BASIC-ECOMMERCE-WEBSITE/actions/workflows/deploy.yml/badge.svg)](https://github.com/Manvikamboz/ECOFINDS-BASIC-ECOMMERCE-WEBSITE/actions/workflows/deploy.yml)
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)
-![Express](https://img.shields.io/badge/Express-5.x-black)
-![MySQL](https://img.shields.io/badge/MySQL-Aiven%20Cloud-blue)
-![Security Score](https://img.shields.io/badge/Security-98%25%20%F0%9F%8F%86%20A-brightgreen)
-![License](https://img.shields.io/badge/license-ISC-blue)
+![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5.x-000000?logo=express&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-Aiven%20Cloud-4479A1?logo=mysql&logoColor=white)
+![Security](https://img.shields.io/badge/Security%20Score-98%25%20Grade%20A-brightgreen)
+![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?logo=vercel&logoColor=white)
+
+**Discover unique treasures, reduce waste, and embrace sustainable living.**
+**Every purchase makes a difference for our planet.**
+
+[View Live](https://ecofinds-basic-ecommerce-website.vercel.app) · [Watch Demo](./ecofinds_prototype.mp4) · [Report Bug](https://github.com/Manvikamboz/ECOFINDS-BASIC-ECOMMERCE-WEBSITE/issues)
+
+</div>
 
 ---
 
-## 🚀 Live Demo
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
-🌐 **[View Live on Vercel →](https://ecofinds-basic-ecommerce-website.vercel.app)**
-
-📹 **[Watch Prototype Video](./ecofinds_prototype.mp4)**
-
----
-
-## ✨ Features
+## Features
 
 | Feature | Description |
 |---------|-------------|
-| 🔐 **Authentication** | JWT-based login/register with bcrypt password hashing (12 rounds) |
-| 🛍️ **Product Listings** | Create, edit, delete listings with image upload (5MB max) |
-| 🔍 **Search & Filter** | Real-time search + filter by category with pagination |
-| 🛒 **Shopping Cart** | Add/remove items, quantity management, cart persistence |
-| 💳 **Checkout** | Transactional checkout with full order history |
-| 📊 **Dashboard** | Manage your listings, profile, and purchase history |
-| 🖼️ **Image Uploads** | Upload product images with MIME type validation |
+| Authentication | JWT-based login/register with bcrypt password hashing (12 rounds) |
+| Product Listings | Create, edit, delete listings with image upload (5MB max) |
+| Search & Filter | Real-time search + filter by category with pagination |
+| Shopping Cart | Add/remove items, quantity management, cart persistence |
+| Checkout | Transactional checkout with full order history |
+| Dashboard | Manage your listings, profile, and purchase history |
+| Image Uploads | Upload product images with MIME type validation |
 
 ---
 
-## 🛡️ Security Highlights
+## Security Highlights
 
-Security score: **98% — Grade 🏆 A** (verified by built-in security scanner)
+<img align="right" src="https://media.giphy.com/media/077i6AULCXc0FKTj9s/giphy.gif" width="200"/>
 
-- ✅ **Helmet.js** — HTTP security headers (CSP, X-Frame-Options, HSTS)
-- ✅ **Rate Limiting** — 10 req/15min on auth routes, 100 req/min globally
-- ✅ **CORS** — restricted to allowed origin only
-- ✅ **bcrypt** — salt rounds: 12, timing-safe login comparison
-- ✅ **Parameterized SQL** — full protection against SQL injection
-- ✅ **XSS Prevention** — `escapeHtml()` applied across all 25 DOM insertions
-- ✅ **Input Validation** — server-side validation on every route
-- ✅ **DB Transactions** — atomic checkout with rollback on failure
-- ✅ **JWT Secrets** — loaded from env only, no hardcoded fallbacks
-- ✅ **Seller Protection** — sellers cannot buy their own products
-- ✅ **File Safety** — MIME type validation + 5MB size limit
+Security score: **98% — Grade A** (verified by built-in `security-scan.js`)
+
+- Helmet.js — HTTP security headers (CSP, X-Frame-Options, HSTS)
+- Rate Limiting — 10 req/15min on auth, 100 req/min globally
+- CORS — restricted to allowed origin only
+- bcrypt — salt rounds: 12, timing-safe login comparison
+- Parameterized SQL — full protection against SQL injection
+- XSS Prevention — `escapeHtml()` applied across all 25 DOM insertions
+- Input Validation — server-side validation on every route
+- DB Transactions — atomic checkout with rollback on failure
+- JWT Secrets — loaded from env only, no hardcoded fallbacks
+- Seller Protection — sellers cannot buy their own products
+- File Safety — MIME type validation + 5MB size limit
+
+```bash
+node security-scan.js
+# => 40 PASS | 1 WARN | 0 FAIL | Score: 98%
+```
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
+
+<img align="right" src="https://media.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif" width="200"/>
 
 | Layer | Technology |
 |-------|-----------|
-| **Backend** | Node.js, Express.js 5.x |
-| **Database** | MySQL (Aiven Cloud) via `mysql2` connection pool |
-| **Auth** | JSON Web Tokens (JWT) + bcrypt |
-| **File Uploads** | Multer (disk storage) |
-| **Security** | Helmet, express-rate-limit, CORS |
-| **Frontend** | HTML5, CSS3, Vanilla JavaScript |
-| **Deployment** | Vercel (serverless) |
-| **CI/CD** | GitHub Actions |
+| Backend | Node.js, Express.js 5.x |
+| Database | MySQL (Aiven Cloud) via `mysql2` connection pool |
+| Auth | JSON Web Tokens (JWT) + bcrypt |
+| File Uploads | Multer (disk storage) |
+| Security | Helmet, express-rate-limit, CORS |
+| Frontend | HTML5, CSS3, Vanilla JavaScript |
+| Deployment | Vercel (serverless) |
+| CI/CD | GitHub Actions |
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ECOFINDS-BASIC-ECOMMERCE-WEBSITE/
@@ -75,6 +87,7 @@ ECOFINDS-BASIC-ECOMMERCE-WEBSITE/
 │       └── deploy.yml       # CI/CD: test + Vercel deploy
 ├── public/
 │   ├── index.html           # Full frontend SPA
+│   ├── banner.png           # README banner
 │   └── uploads/             # Uploaded product images
 ├── server.js                # Express API server
 ├── schema.sql               # MySQL database schema
@@ -87,7 +100,9 @@ ECOFINDS-BASIC-ECOMMERCE-WEBSITE/
 
 ---
 
-## ⚙️ Local Development Setup
+## Local Development
+
+<img src="https://media.giphy.com/media/ZVik7pIoJA3cL4zBIb/giphy.gif" width="100%"/>
 
 ### Prerequisites
 - Node.js 18+
@@ -124,8 +139,7 @@ node setup-db.js
 
 ### 5. Start the dev server
 ```bash
-npm run dev     # with auto-reload (nodemon)
-# or
+npm run dev     # with auto-reload via nodemon
 npm start       # production mode
 ```
 
@@ -133,12 +147,12 @@ Visit: **http://localhost:3000**
 
 ---
 
-## 🌐 Production Deployment (Vercel + Aiven)
+## Production Deployment (Vercel + Aiven)
 
-### Database (Aiven Cloud MySQL — Free Tier)
+### Database — Aiven Cloud MySQL (Free Tier)
 1. Sign up at [aiven.io](https://aiven.io) → create a MySQL service
 2. Copy connection credentials
-3. Run the schema: `node setup-db.js`
+3. Run: `node setup-db.js`
 
 ### Deploy to Vercel
 1. Go to [vercel.com/new](https://vercel.com/new)
@@ -156,80 +170,65 @@ Visit: **http://localhost:3000**
 | `JWT_SECRET` | A strong random secret |
 | `ALLOWED_ORIGIN` | Your Vercel URL |
 
-4. Click **Deploy** → live URL generated!
+4. Click **Deploy**
 
 ---
 
-## 🔁 CI/CD Pipeline
+## CI/CD Pipeline
 
 Every push to `main` automatically:
 
 ```
 Push to main
-     │
-     ▼
-[Build & Test] ── Node 18.x + 20.x matrix
-     │               npm ci + npm test
-     │
-     ▼
-[Deploy] ────────── npx vercel --prod
-                    (via VERCEL_TOKEN secret)
+     |
+     v
+[Build & Test] -- Node 18.x + 20.x matrix
+     |               npm ci + npm test
+     |
+     v
+[Deploy] --------- npx vercel --prod
+                   (via VERCEL_TOKEN secret)
 ```
 
 ---
 
-## 🔒 Running the Security Scanner
-
-```bash
-node security-scan.js
-```
-
-Checks 40+ security rules across:
-- Environment & secrets
-- Server hardening
-- XSS prevention
-- SQL injection safety
-- File upload security
-- Dependency audit
-- GitHub Actions config
-
----
-
-## 📡 API Reference
+## API Reference
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `POST` | `/api/register` | ❌ | Register new user |
-| `POST` | `/api/login` | ❌ | Login, returns JWT |
-| `GET` | `/api/products` | ❌ | List products (paginated) |
-| `GET` | `/api/products/:id` | ❌ | Get single product |
-| `POST` | `/api/products` | ✅ | Create listing |
-| `PUT` | `/api/products/:id` | ✅ | Update listing |
-| `DELETE` | `/api/products/:id` | ✅ | Delete listing |
-| `GET` | `/api/cart` | ✅ | Get cart items |
-| `POST` | `/api/cart` | ✅ | Add to cart |
-| `DELETE` | `/api/cart/:id` | ✅ | Remove from cart |
-| `POST` | `/api/checkout` | ✅ | Place order |
-| `GET` | `/api/orders` | ✅ | Purchase history |
-| `GET` | `/api/my-products` | ✅ | My listings |
-| `PUT` | `/api/profile` | ✅ | Update profile |
+| POST | `/api/register` | No | Register new user |
+| POST | `/api/login` | No | Login, returns JWT |
+| GET | `/api/products` | No | List products (paginated) |
+| GET | `/api/products/:id` | No | Get single product |
+| POST | `/api/products` | Yes | Create listing |
+| PUT | `/api/products/:id` | Yes | Update listing |
+| DELETE | `/api/products/:id` | Yes | Delete listing |
+| GET | `/api/cart` | Yes | Get cart items |
+| POST | `/api/cart` | Yes | Add to cart |
+| DELETE | `/api/cart/:id` | Yes | Remove from cart |
+| POST | `/api/checkout` | Yes | Place order |
+| GET | `/api/orders` | Yes | Purchase history |
+| GET | `/api/my-products` | Yes | My listings |
+| PUT | `/api/profile` | Yes | Update profile |
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repo
 2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit changes: `git commit -m 'feat: add your feature'`
+3. Commit: `git commit -m 'feat: add your feature'`
 4. Push: `git push origin feature/your-feature`
 5. Open a Pull Request
 
 ---
 
-## 👩‍💻 Built By
+<div align="center">
 
-**Manvi Kamboj** — built with vibe coding ✨
+<img src="https://media.giphy.com/media/LnQjpWaON8nhr21vNW/giphy.gif" width="60"/>
 
----
+**Built by Manvi Kamboj** — built with vibe coding
 
-*EcoFinds — Every purchase makes a difference 🌍*
+*EcoFinds — Every purchase makes a difference*
+
+</div>
