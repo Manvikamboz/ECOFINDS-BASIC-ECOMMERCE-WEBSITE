@@ -628,9 +628,17 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Internal server error' });
 });
 
-// ─── Start ─────────────────────────────────────────────────────────────────────
-connectDB().then(() => {
-    app.listen(PORT, () => {
-        console.log(`🌱 EcoFinds server running on port ${PORT}`);
+// ─── Start: local dev vs Vercel serverless ─────────────────────────────────────
+if (require.main === module) {
+    // Running directly with `node server.js` or `npm start`
+    connectDB().then(() => {
+        app.listen(PORT, () => {
+            console.log(`🌱 EcoFinds server running on port ${PORT}`);
+        });
     });
-});
+} else {
+    // Running as a Vercel serverless function — export app directly
+    // Pool auto-connects on first query; connectDB() just verifies the connection
+    connectDB().catch(err => console.error('DB init warning:', err.message));
+    module.exports = app;
+}
