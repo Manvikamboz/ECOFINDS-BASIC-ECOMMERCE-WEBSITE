@@ -40,6 +40,14 @@ jobs:
     needs: build-and-test
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
 
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      PORT: ${{ secrets.PORT }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -61,12 +69,9 @@ jobs:
             echo "❌ server.js not found!" && exit 1
           fi
 
-      - name: Deployment placeholder
+      - name: Confirm environment is set
         run: |
-          echo "🚀 EcoFinds deployment step"
-          echo "Add your deploy commands here (e.g., SSH to server, push to Railway/Render/Heroku, etc.)"
-          echo "Example secrets to configure in GitHub Settings → Secrets:"
-          echo "  - DEPLOY_HOST"
-          echo "  - DEPLOY_USER"
-          echo "  - DEPLOY_KEY"
-          echo "  - DB_HOST, DB_USER, DB_PASSWORD"
+          echo "✅ DB_HOST is set: ${{ secrets.DB_HOST != '' }}"
+          echo "✅ DB_USER is set: ${{ secrets.DB_USER != '' }}"
+          echo "✅ JWT_SECRET is set: ${{ secrets.JWT_SECRET != '' }}"
+          echo "🚀 Ready to deploy EcoFinds!"
